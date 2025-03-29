@@ -1,16 +1,23 @@
 const SHA256 = require('crypto-js/sha256');
+//有空多做code review
+class Transaction{
+    constructor(fromAddress, toAddress, amount){
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
+        this.amount = amount;
+    }
+}
 
 class Block{
-    constructor(index, timestamp, data, previousHash = ''){
-        this.index = index;
+    constructor(timestamp, transactions, previousHash = ''){
         this.timestamp = timestamp;
-        this.data = data;
+        this.transactions = transactions;
         this.previousHash = previousHash;
         this.Hash = this.caculateHash();
         this.nonce = 0;
     }
     caculateHash(){
-        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+        return SHA256(this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
     }
     mineBlock(difficulty){
         //while loop 的條件我沒有看得很明白
@@ -29,22 +36,48 @@ class Block{
 class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
-        this.difficult = 4; //此為操縱變數
+        this.difficult = 2; //此為操縱變數
+        this.pendingTransactions = [];
+        this.miningReward = 100;
 
     } 
     createGenesisBlock(){
-        return new Block(0, "01/01/2017", "Genesis block", "0");
+        return new Block("01/01/2017", "Genesis block", "0");
     }
     getLastestBlock(){
         return this.chain[this.chain.length - 1];
     }
-    addBlock(newBlock){
-        newBlock.previousHash = this.getLastestBlock().Hash;
-        newBlock.mineBlock(this.difficult);
-        newBlock.Hash = newBlock.caculateHash();
+    minePendingTransactions(miningRewardAddress){
+        let block = new Block( Date.now(), this.pendingTransactions);
+        block.mineBlock(this.difficult);
 
-        this.chain.push(newBlock);
+        console.log("Block sucessfully mined");
+        this.chain.push(block);
+        this.pendingTransactions = [
+            new Transaction(null, miningRewardAddress, this.miningReward)
+        ];
     }
+
+    createTransaction(transaction){
+        this.pendingTransactions.push(transaction);
+    }   
+
+    getBalanceOfAddress(address){
+        let balance = 0;
+        for(const block of this.chain){
+            for(const trans of block.transactions){
+                if(trans.fromAddress === address){
+                    balance -= trans.amount;
+                }
+
+                if(trans.toAddress === address){
+                    balance += trans.amount;
+                }
+            }
+        }
+        return balance
+    }
+
     isChainValid(){
         for(var i = 1; i < this.chain.length; i++){
             const currentBlock = this.chain[i];
@@ -63,15 +96,12 @@ class Blockchain{
 
 let bubuCoin = new Blockchain();
 
-console.log("Mining block1");
-bubuCoin.addBlock(new Block(1, "26/03/2017", {amount: 10}));
-console.log("Mining block2")
-bubuCoin.addBlock(new Block(2, "27/03/2017", {amount: 100}));
+bubuCoin.createTransaction(new Transaction('address1', 'address2', 100))
+bubuCoin.createTransaction(new Transaction('address2', 'address1', 10))
 
-
-// console.log(bubuCoin.isChainValid());
-
-// bubuCoin.chain[1].data = {amount: 100000};
-// console.log(bubuCoin.isChainValid());
-
-// console.log(JSON.stringify(bubuCoin), null, 4);
+console.log('\n Starting the miner...');
+bubuCoin.minePendingTransactions('dudu-address');
+console.log('\n Balance of dudu is', bubuCoin.getBalanceOfAddress('dudu-address'));
+console.log('\n Starting the miner again...');
+bubuCoin.minePendingTransactions('dudu-address');
+console.log('\n Balance of dudu is', bubuCoin.getBalanceOfAddress('dudu-address'));
