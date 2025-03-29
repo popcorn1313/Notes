@@ -20,12 +20,17 @@ class Block{
         }
         console.log("Block mined: " + this.Hash);
     }
+    caculateHash(){
+        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+
+    }
 }
 
 class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
         this.difficult = 4; //此為操縱變數
+
     } 
     createGenesisBlock(){
         return new Block(0, "01/01/2017", "Genesis block", "0");
@@ -36,6 +41,8 @@ class Blockchain{
     addBlock(newBlock){
         newBlock.previousHash = this.getLastestBlock().Hash;
         newBlock.mineBlock(this.difficult);
+        newBlock.Hash = newBlock.caculateHash();
+
         this.chain.push(newBlock);
     }
     isChainValid(){
@@ -55,6 +62,7 @@ class Blockchain{
 
 
 let bubuCoin = new Blockchain();
+
 console.log("Mining block1");
 bubuCoin.addBlock(new Block(1, "26/03/2017", {amount: 10}));
 console.log("Mining block2")
@@ -65,4 +73,5 @@ bubuCoin.addBlock(new Block(2, "27/03/2017", {amount: 100}));
 
 // bubuCoin.chain[1].data = {amount: 100000};
 // console.log(bubuCoin.isChainValid());
+
 // console.log(JSON.stringify(bubuCoin), null, 4);
