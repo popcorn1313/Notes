@@ -7,7 +7,7 @@ class Transaction{
         this.amount = amount;
     }
 
-    caculataHash(){
+    calculataHash(){
         return SHA256(this.fromAddress + this.toAddress + this.amount).toString();
     }
     signTransaction(signingKey){
@@ -28,7 +28,7 @@ class Transaction{
         }
 
         const publicKey = ec.keyFromPublic(this.fromAddress, 'hex');
-        return publicKey.verify(this.caculataHash(), this.signature);
+        return publicKey.verify(this.calculataHash(), this.signature);
     }
 }
 
@@ -37,23 +37,19 @@ class Block{
         this.timestamp = timestamp;
         this.transactions = transactions;
         this.previousHash = previousHash;
-        this.Hash = this.caculateHash();
+        this.Hash = this.calculateHash();
         this.nonce = 0;
     }
-    caculateHash(){
+    calculateHash(){
         return SHA256(this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
     }
     mineBlock(difficulty){
         //一個常見手法，為了使0的個數相同的方法
         while(this.Hash.substring(0, difficulty) != Array(difficulty + 1).join("0")){
             this.nonce++;
-            this.Hash = this.caculateHash();
+            this.Hash = this.calculateHash();
         }
         console.log("Block mined: " + this.Hash);
-    }
-    caculateHash(){
-        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
-
     }
 }
 
@@ -117,5 +113,6 @@ class Blockchain{
     }
 }
 
-MediaSourceHandle.export.Blockchain = Blockchain;
-MediaSourceHandle.export.Transaction = Transaction;
+
+module.exports.Blockchain = Blockchain;
+module.exports.Transaction = Transaction
