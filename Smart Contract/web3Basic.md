@@ -142,23 +142,6 @@
         - 流動性提供者（LP） → 任何人都可以存入資金，並獲得交易手續費作為獎勵
 ## 補充：constant product formula
 ![跑不出來](./Sources/constant.png "")
-## Token sales
-- RWA 
-    - 提升流動性 → 透過代幣化，資產可以在區塊鏈上交易，降低傳統市場的流動性限制。
-    - 降低投資門檻 → 允許部分所有權，投資者可以購買資產的一小部分，而非整個資產。
-    - 提高透明度 → 所有交易都記錄在區塊鏈上，減少欺詐風險並提升市場信任度。
-    - 加速交易與結算 → 傳統資產交易可能需要數天甚至數週，而區塊鏈技術可以實現即時結算。
-    - 促進 DeFi 整合 → RWA 代幣可以用於去中心化金融（DeFi）平台，提供借貸、抵押等金融服務。
-- key difference
-
-|Feature|Initial coin offering(ICO)|Initial exchanging offering(IEO)|Initial DEX offering (IDO)|Security token offering(STO)|
-|----|----|----|----|----|
-|Platform|independent|centralized exchange|decentralized exchange|regulated platform|
-|Regulation|low|moderate|low|high|
-Intermediary|none|exchange|none|compliance authority|
-Accessibility|high|moderate|high|limited to accredited investor|
-Credibility|variable|higher|lower|high
-[點我查看過往交易表現](https://cryptorank.io/ico)
 ## Why Web3
 - core idea
     - decentralized : ownership can gets distributed amongst its builder and users
